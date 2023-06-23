@@ -740,7 +740,10 @@ class Main:
         timer = self.args.captureDelay
         prev_time = None
         curr_time = None
-        self.display_name = "left + right + rgb"
+        if not self.args.disableRgb:
+            self.display_name = "left + right + rgb"
+        else:
+            self.display_name = "left + right"
         last_frame_time = time.time()
         # with self.get_pipeline() as pipeline:
         while not finished:
@@ -903,7 +906,6 @@ class Main:
                 combine_img = np.hstack((frame_list[0], frame_list[1], frame_list[2]))
             else:
                 combine_img = np.vstack((frame_list[0], frame_list[1]))
-                self.display_name = "left + right"
 
             if start_timer == True:
                 curr_time = time.time()
@@ -913,7 +915,7 @@ class Main:
                 if timer <= 0 and start_timer == True:
                     start_timer = False
                     capturing = True
-                    print('Statrt capturing...')
+                    print('Start capturing...')
 
                 image_shape = combine_img.shape
                 cv2.putText(combine_img, str(timer),
