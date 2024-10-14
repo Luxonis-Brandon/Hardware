@@ -16,8 +16,6 @@ jobs:
   windows-installer:
     runs-on: windows-latest
     steps:
-    # Clones repository without persisting credentials
-    # As this local git repository is packed with installer
     - uses: actions/checkout@v2
       with:
         submodules: 'recursive'
@@ -45,7 +43,6 @@ jobs:
         path: launcher/windows/build/Output/
         retention-days: 5
 
-
   release:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: windows-latest
@@ -57,17 +54,19 @@ jobs:
         name: 'installers'
         path: installers
 
-   # Sign Launcher
+    # Sign Launcher
     - name: Sign Windows Launcher
       run: |
         New-Item -ItemType directory -Path certificate
         Set-Content -Path certificate\certificate.txt -Value '${{ secrets.WINDOWS_CERTIFICATE }}'
         certutil -decode certificate\certificate.txt certificate\certificate.pfx
         & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /td sha256 /fd sha256 /f certificate\certificate.pfx /p '${{ secrets.WINDOWS_CERTIFICATE_PASS }}' /tr http://timestamp.digicert.com installers/DepthAI_setup.exe
+
     - name: Get current tag
       id: tag
       uses: battila7/get-version-action@v2
-   # Create GitHub release
+
+    # Create GitHub release
     - uses: actions/create-release@master
       id: createRelease
       name: Create ${{ steps.tag.outputs.version }} DepthAI Demo release
@@ -94,4 +93,61 @@ jobs:
         upload_url: ${{ steps.createRelease.outputs.upload_url }}
         asset_path: ${{ github.workspace }}\installers\DepthAI_setup.exe
         asset_name: DepthAI-setup-${{ steps.tag.outputs.version }}.exe
+        asset_content_type: application/octet-stream
+
+  latest-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    needs: windows-installer
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Download Windows installer
+      uses: actions/download-artifact@v2
+      with:
+        name: 'installers'
+        path: installers
+
+    # Use Bash shell to create or update "latest" tag
+    - name: Create or update "latest" tag
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        latest_tag_sha=$(git rev-parse refs/tags/latest || echo "")
+        current_commit_sha=$(git rev-parse HEAD)
+        if [ "$latest_tag_sha" != "$current_commit_sha" ]; then
+          git tag -f latest
+          git push origin --tags --force
+        fi
+      shell: bash
+
+    # Create or update "latest" release
+    - uses: actions/create-release@master
+      id: createLatestRelease
+      name: Create or update latest DepthAI Demo release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: latest
+        release_name: DepthAI Demo latest
+        body: |
+          ## Features
+
+          ## Bugs
+
+          ## Misc
+
+        draft: false
+        prerelease: false
+
+    # Upload release assets for "latest"
+    - name: Upload Windows Installer to Latest Release
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.createLatestRelease.outputs.upload_url }}
+        asset_path: ${{ github.workspace }}\installers\DepthAI_setup.exe
+        asset_name: DepthAI-setup-latest.exe
         asset_content_type: application/octet-stream
