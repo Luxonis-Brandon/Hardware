@@ -52,7 +52,7 @@ jobs:
     needs: windows-installer
     steps:
     - name: Download Windows installer
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: 'installers'
         path: installers
