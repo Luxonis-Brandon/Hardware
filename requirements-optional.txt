@@ -1,7 +1,7 @@
 open3d==0.10.0.0; platform_machine != "armv6l" and platform_machine != "armv7l" and python_version < "3.9" and platform_machine != "aarch64"
 ffmpy3==0.2.4
 pyusb==1.2.1
-sentry-sdk==1.14.0
+sentry-sdk==2.8.0
 
 # Needed for Replay functionality (for Readers)
 mcap>=0.0.10
