@@ -57,8 +57,8 @@ The following table lists all the models supported by the SDK. The model name is
      - `DMZ <https://github.com/luxonis/depthai-model-zoo/tree/main/models/facemesh_192x192>`__
      - 32
    * - ``facial_landmarks_68_160x160``
-     - 32
      - `DMZ <https://github.com/luxonis/depthai-model-zoo/blob/main/models/facial_landmarks_68_160x160>`__
+     - 32
    * - ``human-pose-estimation-0001``
      - `OMZ <https://docs.openvino.ai/2022.1/omz_models_model_human_pose_estimation_0001.html>`__
      - 8
