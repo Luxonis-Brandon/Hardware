@@ -529,7 +529,7 @@ class Rosbag1Recorder(_RosbagBaseRecorder):
             # self.writer.set_compression(Writer.CompressionFormat.LZ4)
             self.writer.open()
             for _, stream in self.streams.items():
-                stream.connection = self.writer.add_connection(stream.topic, stream.ros_type.__msgtype__, latching=True)
+                stream.connection = self.writer.add_connection(stream.topic, stream.ros_type.__msgtype__, latching=1)
 
         self.writer.write(self.streams[name].connection, time.time_ns() - self.start_nanos, cdr_to_ros1(serialize_cdr(data, type), type))
 
