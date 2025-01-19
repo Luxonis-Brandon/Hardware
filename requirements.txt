@@ -1,7 +1,7 @@
 requests==2.26.0
 --extra-index-url https://www.piwheels.org/simple
 numpy>=1.21.4,<2.0.0 # For RPi Buster (last successful build) and macOS M1 (first build). But allow for higher versions, to support Python3.11 (not available in 1.21.4 yet)
-opencv-contrib-python==4.5.5.62 # Last successful RPi build, also covers M1 with above pinned numpy (otherwise 4.6.0.62 would be required, but that has a bug with charuco boards). Python version not important, abi3 wheels
+opencv-contrib-python==4.8.1.78 # Last successful RPi build, also covers M1 with above pinned numpy (otherwise 4.6.0.62 would be required, but that has a bug with charuco boards). Python version not important, abi3 wheels
 depthai-sdk==1.9.4
 --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-depthai-data-local/wheels/
 pyqt5>5,<5.15.6 ; platform_machine != "armv6l" and platform_machine != "armv7l" and platform_machine != "aarch64" and platform_machine != "arm64"
