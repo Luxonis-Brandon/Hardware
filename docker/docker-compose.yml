@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  camera:
+    image: luxonis/depthai-library
+    container_name: rgb-cam
+    device_cgroup_rules:
+      - 'c 189:* rmw'
+    volumes:
+        - '/dev/bus/usb:/dev/bus/usb'
+        - '/tmp/.X11-unix:/tmp/.X11-unix'
+    environment:
+        - DISPLAY=$DISPLAY
+    privileged: true      
+    
+    command: python3 depthai-python/examples/ColorCamera/rgb_preview.py
